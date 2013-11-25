@@ -22,7 +22,11 @@ class Board
     board
   end
 
-
+  def to_s
+    @board_status.each do |row|
+      puts row
+    end
+  end
 
   def get_neighbors(tile)
     neighbor_tiles = []
@@ -31,9 +35,10 @@ class Board
         next if x == 0 && y == 0
         new_tile_x = tile.position[0] + x
         new_tile_y = tile.position[1] + y
-        next if new_tile_x < 0 || new_tile_x > 8
-        next if new_tile_y < 0 || new_tile_y > 8
-        neighbor_tiles << @board_status[new_tile_x][new_tile_y]
+
+        unless new_tile_x.between?(0,8) and new_tile_y.between?(0,8)
+          neighbor_tiles << @board_status[new_tile_x][new_tile_y]
+        end
       end
     end
     neighbor_tiles
@@ -55,13 +60,13 @@ class Board
     if tile.is_bomb
       #Boom
     elsif bomb_count > 0
-      bomb_count(neighbors)
+      tile.bomb_count = bomb_count
+      bomb_count
     else
       neighbors.each do |neighbor|
         reveal(neighbor)
       end
-    else
-
+    end
   end
 
   def flag(tile)
