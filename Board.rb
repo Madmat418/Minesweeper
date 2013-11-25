@@ -1,16 +1,18 @@
 require_relative 'Tile.rb'
 class Board
-  attr_accessor :board
+  attr_accessor :board_status
 
   def initialize(num_bombs = 20, size = 9)
+    @board_status = create_board
+  end
+
+  def create_board(num_bombs, size)
     nodes = []
-    @board = Array.new(size) do |row|
+    Array.new(size) do |row|
       Array.new(size) do |col|
-        p row
-        p col
-        # node = Node.new([row, col])
-#         nodes << node
-#         node
+        node = Node.new([row, col])
+        nodes << node
+        node
       end
     end
 
@@ -19,9 +21,6 @@ class Board
     end
   end
 
-  def get_neighbors(node)
-
-  end
 
 
 end
