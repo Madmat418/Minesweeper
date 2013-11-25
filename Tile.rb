@@ -1,4 +1,4 @@
-class Node
+class Tile
   attr_accessor :position, :is_bomb, :is_revealed, :is_flagged
 
   def initialize(position)
@@ -11,6 +11,10 @@ class Node
   def reveal
     @is_revealed = true
     @is_bomb
+  end
+
+  def get_neighbors(tile)
+
   end
 
 
