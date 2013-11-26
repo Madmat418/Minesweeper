@@ -1,22 +1,22 @@
 require_relative 'Tile.rb'
 class Board
-  attr_accessor :board_status
+  attr_accessor :board_status, :num_bombs, :tiles
 
-  def initialize(num_bombs = 20, size = 9)
-    @board_status = board(num_bombs,size)
+  def initialize(@num_bombs = 20, size = 9)
+    @board_status = board(@num_bombs,size)
   end
 
-  def board(num_bombs, size)
-    tiles = []
+  def board(@num_bombs, size)
+    @tiles = []
     board = Array.new(size) do |row|
       Array.new(size) do |col|
         tile = Tile.new([row, col])
-        tiles << tile
+        @tiles << tile
         tile
       end
     end
 
-    tiles.sample(num_bombs).each do |tile|
+    @tiles.sample(@num_bombs).each do |tile|
       tile.is_bomb = true
     end
     board
@@ -60,14 +60,17 @@ class Board
 
   def reveal(tile)
     return if tile.is_revealed
+    if tile.is_flagged
+      puts "Tile is flagged.  Unflag before revealing."
+      return
+    end
     tile.is_revealed = true
     neighbors = get_neighbors(tile)
     bomb_count = neighbor_bomb_count(neighbors)
     if tile.is_bomb
-      #Boom
+      "bomb"
     elsif bomb_count > 0
       tile.bomb_count = bomb_count
-      bomb_count
     else
       neighbors.each do |neighbor|
         reveal(neighbor)
@@ -76,6 +79,10 @@ class Board
   end
 
   def flag(tile)
+    if tile.is_revealed
+      puts "This tile is already revealed."
+      return
+    end
     tile.is_flagged = !tile.is_flagged
   end
 end

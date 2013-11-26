@@ -18,6 +18,14 @@ class Minesweeper
     end
   end
 
+  def won?
+    revealed_counter = 0
+    @board.tiles.each do |tile|
+      revealed_counter += 1 if tile.is_revealed
+    end
+    revealed_counter == @board.tiles.length - @board.num_bombs ? true : false
+  end
+
 
 end
 
