@@ -3,10 +3,10 @@ class Board
   attr_accessor :board_status
 
   def initialize(num_bombs = 20, size = 9)
-    @board_status = create_board(num_bombs,size)
+    @board_status = board(num_bombs,size)
   end
 
-  def create_board(num_bombs, size)
+  def board(num_bombs, size)
     tiles = []
     board = Array.new(size) do |row|
       Array.new(size) do |col|
@@ -23,12 +23,18 @@ class Board
   end
 
   def to_s
+    output = ''
     @board_status.each do |row|
-      puts row
+      line_output = ''
+      row.each do |tile|
+        line_output << tile.to_s + ' '
+      end
+      output << line_output + "\n"
     end
+    output
   end
 
-  def get_neighbors(tile)
+  def neighbors(tile)
     neighbor_tiles = []
     (-1..1).each do |x|
       (-1..1).each do |y|
@@ -36,7 +42,7 @@ class Board
         new_tile_x = tile.position[0] + x
         new_tile_y = tile.position[1] + y
 
-        unless new_tile_x.between?(0,8) and new_tile_y.between?(0,8)
+        if new_tile_x.between?(0,8) and new_tile_y.between?(0,8)
           neighbor_tiles << @board_status[new_tile_x][new_tile_y]
         end
       end
@@ -56,7 +62,7 @@ class Board
     return if tile.is_revealed
     tile.is_revealed = true
     neighbors = get_neighbors(tile)
-    bomb_count = neighbor_bomb_count
+    bomb_count = neighbor_bomb_count(neighbors)
     if tile.is_bomb
       #Boom
     elsif bomb_count > 0
