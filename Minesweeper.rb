@@ -1,4 +1,3 @@
-require_relative 'Player.rb'
 require_relative 'Board.rb'
 require_relative 'Tile.rb'
 class Minesweeper
@@ -14,10 +13,11 @@ class Minesweeper
     until self.won?
       puts @board
       player_input = self.move
-      tile = tile(player_input)
-      player_input[0] == 'r' ? @board.reveal(tile) : @board.flag(tile))
+      tile = which_tile(player_input)
+      player_input[0] == 'r' ? @board.reveal(tile) : @board.flag(tile)
       if self.lost?
         self.loser
+        puts "Bomb at: #{tile.position.map {|a| a+1 }}"
         return
       end
     end
@@ -37,7 +37,7 @@ class Minesweeper
     input = input.scan(/[rf]|[0-9]+/)
   end
 
-  def tile(input)
+  def which_tile(input)
     row, col = input[1].to_i-1, input[2].to_i-1
     @board.board_status[row][col]
   end
@@ -49,11 +49,10 @@ class Minesweeper
     end
     puts @board
     puts "Boom! You lose!"
-    puts "Bomb at: #{tile.position.map {|a| a+1 }}"
   end
 
   def lost?
-    @board.tiles.none? do |tile|
+    @board.tiles.any? do |tile|
       tile.is_bomb && tile.is_revealed
     end
   end
@@ -65,5 +64,5 @@ class Minesweeper
   end
 end
 
-ms = Minesweeper.new(Player.new)
+ms = Minesweeper.new(20, 9)
 ms.play
