@@ -1,5 +1,5 @@
 class Tile
-  attr_accessor :position, :is_bomb, :is_revealed, :is_flagged
+  attr_accessor :position, :is_bomb, :is_revealed, :is_flagged, :bomb_count
 
   def initialize(position)
     @position = position
@@ -9,13 +9,8 @@ class Tile
     @bomb_count = 0
   end
 
-  def reveal
-    @is_revealed = true
-    @is_bomb
-  end
-
   def to_s
-    if @is_bomb and @is_revealed
+    if @is_bomb && @is_revealed
       'B'
     elsif @is_flagged
       'F'

@@ -2,12 +2,14 @@ require_relative 'Tile.rb'
 class Board
   attr_accessor :board_status, :num_bombs, :tiles
 
-  def initialize(@num_bombs = 20, size = 9)
-    @board_status = board(@num_bombs,size)
+  def initialize(num_bombs = 3, size = 20)
+    @num_bombs = num_bombs
+    @size = size
+    @tiles = []
+    @board_status = board(num_bombs,size)
   end
 
-  def board(@num_bombs, size)
-    @tiles = []
+  def board(num_bombs, size)
     board = Array.new(size) do |row|
       Array.new(size) do |col|
         tile = Tile.new([row, col])
@@ -16,7 +18,7 @@ class Board
       end
     end
 
-    @tiles.sample(@num_bombs).each do |tile|
+    @tiles.sample(num_bombs).each do |tile|
       tile.is_bomb = true
     end
     board
@@ -42,7 +44,7 @@ class Board
         new_tile_x = tile.position[0] + x
         new_tile_y = tile.position[1] + y
 
-        if new_tile_x.between?(0,8) and new_tile_y.between?(0,8)
+        if new_tile_x.between?(0,@size-1) and new_tile_y.between?(0,@size-1)
           neighbor_tiles << @board_status[new_tile_x][new_tile_y]
         end
       end
@@ -65,7 +67,7 @@ class Board
       return
     end
     tile.is_revealed = true
-    neighbors = get_neighbors(tile)
+    neighbors = neighbors(tile)
     bomb_count = neighbor_bomb_count(neighbors)
     if tile.is_bomb
       "bomb"
