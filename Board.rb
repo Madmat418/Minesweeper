@@ -70,7 +70,7 @@ class Board
     neighbors = neighbors(tile)
     bomb_count = neighbor_bomb_count(neighbors)
     if tile.is_bomb
-      "bomb"
+      return
     elsif bomb_count > 0
       tile.bomb_count = bomb_count
     else
