@@ -4,22 +4,30 @@ class Minesweeper
   attr_reader :size, :num_bombs
 
   def initialize(num_bombs, size)
-    @size = size
-    @num_bombs = num_bombs
-    @board = Board.new(num_bombs, size)
+    puts "Please enter the size of the board you would like.  
+	For example: '9' will give you a 9x9 grid."
+    @size = gets.chomp.to_i
+	puts "Please enter the number of bombs you wish to play with."
+    @num_bombs = gets.chomp.to_i
+    @board = Board.new(@size)
   end
 
   def play
+    @placed_bombs = false
     until self.won?
       puts @board
       player_input = self.move
       tile = which_tile(player_input)
+	  unless @placed_bombs
+	    @board.place_bombs(@num_bombs, tile)
+		@placed_bombs = true
+	  end		
       player_input[0] == 'r' ? @board.reveal(tile) : @board.flag(tile)
       if self.lost?
         self.loser
         puts "Bomb at: #{tile.position.map {|a| a+1 }}"
         return
-      end
+      end	
     end
     puts @board
     puts "Congratulations! You won!"

@@ -2,14 +2,13 @@ require_relative 'Tile.rb'
 class Board
   attr_accessor :board_status, :num_bombs, :tiles
 
-  def initialize(num_bombs = 3, size = 20)
-    @num_bombs = num_bombs
+  def initialize(size)
     @size = size
     @tiles = []
-    @board_status = board(num_bombs,size)
+    @board_status = board(size)
   end
 
-  def board(num_bombs, size)
+  def board(size)
     board = Array.new(size) do |row|
       Array.new(size) do |col|
         tile = Tile.new([row, col])
@@ -18,10 +17,17 @@ class Board
       end
     end
 
-    @tiles.sample(num_bombs).each do |tile|
-      tile.is_bomb = true
-    end
     board
+  end
+  
+  def place_bombs(num_bombs, exception)
+    @tiles.sample(num_bombs).each do |tile|
+	  if tile == exception
+	    place_bombs(1, exception)
+	  else
+        tile.is_bomb = true
+      end
+    end
   end
 
   def to_s
